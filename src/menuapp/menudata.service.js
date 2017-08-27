@@ -6,12 +6,30 @@ angular.module('MenuApp')
 .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com");
 
 
-MenuDataService.$inject = ['$http']
-function MenuDataService($http) {
+MenuDataService.$inject = ['$http', 'ApiBasePath']
+function MenuDataService($http, ApiBasePath) {
   var service = this;
 
   service.getAllCategories = function() {
-    return [{name: 'asd'}, {name: 'bsd'}];
+    return $http({
+      method: 'GET',
+      url: ApiBasePath + '/categories.json'
+    }).then(function successCallback(response) {
+      return response.data;
+    }, function errorCallback(response) {
+      console.log('Error!');
+    });
+  };
+
+  service.getItemsForCategory = function(categoryShortName) {
+    return $http({
+      method: 'GET',
+      url: ApiBasePath + '/menu_items.json?category=' + categoryShortName
+    }).then(function successCallback(response) {
+      return response.data.menu_items;
+    }, function errorCallback(response) {
+      console.log('Error!');
+    });
   };
 }
 
